@@ -43,16 +43,16 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
-      - name: npm build
-        run: npm run build
-      
-
       # Runs a single command using the runners shell
       - name: PWD
         run: pwd
       - name: Print working directory
         run: ls -alrt
 
+      - name: npm build
+        run: npm run build
+
+      
       # Jira Keys
       - name: Parse Jira Keys from Commit
         id: jira_keys
