@@ -49,6 +49,9 @@ jobs:
       - name: Print working directory
         run: ls -alrt
 
+      - name: npm install
+        run: npm install
+
       - name: npm build
         run: npm run build
 
