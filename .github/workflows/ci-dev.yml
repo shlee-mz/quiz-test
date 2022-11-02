@@ -51,28 +51,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       # Jira Deployment
-      - name: Push Build Info to Jira
+      - name: Push Deployment Info to Jira
         if: steps.jira_keys.outputs.jira-keys != ''
-        id: push_build_info_to_jira
-        uses: HighwayThree/jira-upload-build-info@master
+        uses: rohit-gohri/jira-ci-cd-integration@v0
         with:
-          cloud-id: '${{ secrets.CLOUD_ID }}'
-          client-id: '${{ secrets.JIRA_CLIENT_ID }}'
-          client-secret: '${{ secrets.JIRA_CLIENT_SECRET }}'
-          pipeline-id: '${{ github.repository }} ${{ github.workflow }}'
-          build-number: ${{ github.run_number }}
-          build-display-name: 'Workflow: ${{ github.workflow }} (#${{ github.run_number }})'
-          build-state: "${{ env.BUILD_STATE }}"
-          build-url: '${{github.event.repository.url}}/actions/runs/${{github.run_id}}'
-          update-sequence-number: '${{ github.run_id }}'
-          last-updated: '${{github.event.head_commit.timestamp}}'
-          issue-keys: "${{ steps.jira_keys.outputs.jira-keys }}"
-          commit-id: '${{ github.sha }}'
-          repo-url: '${{ github.event.repository.url }}'
-          build-ref-url: '${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}'
-
+          state: ${{ env.BUILD_STATE }}
+          environment: dev
+          issue: "${{ steps.jira_keys.outputs.jira-keys }}"
+          jira_instance: shlee-mz
+          client_id: ${{ secrets.JIRA_CLIENT_ID }}
+          client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
+          
       - name: Confirm Jira Build Output
         if: success()
         run: |
+          echo ${{ steps.jira_keys.outputs.jira-keys }}
           echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
 
