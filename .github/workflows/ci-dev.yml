@@ -50,10 +50,16 @@ jobs:
         run: ls -alrt
 
       - name: npm install
-        run: npm install
+        run: yarn install
 
       - name: npm build
-        run: npm run build
+        run: yarn run build
+
+      - name: Print working directory
+        run: ls -alrt
+
+      - name: Print working directory #2
+        run: ls -al build
 
       
       # Jira Keys
