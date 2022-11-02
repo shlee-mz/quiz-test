@@ -20,7 +20,7 @@ function App() {
     const questions = [
         {
             id: 1,
-            question: 'Which statement about Hooks is not true?',
+            question: '# Which statement about Hooks is not true?',
             answer_a:
                 'Hooks are 100% backwards-compatible and can be used side by side with classes',
             answer_b: 'Hooks are still in beta and not available yet',
