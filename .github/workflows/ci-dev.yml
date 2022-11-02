@@ -48,9 +48,10 @@ jobs:
       
 
       # Runs a single command using the runners shell
-      - name: Check npm build
+      - name: PWD
+        run: pwd
+      - name: Print working directory
         run: ls -alrt
-
 
       # Jira Keys
       - name: Parse Jira Keys from Commit
