@@ -72,7 +72,7 @@ jobs:
         run: |
           aws s3 cp $ARCHIVED_ARTIFACTS \
           --region ap-northeast-2 \
-          dist s3://quiz-build-artifacs
+          s3://quiz-build-artifacs
 
       
       # Jira Keys
