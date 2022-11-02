@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: DEV-CI
+name: CI-DEV
 
 # Controls when the workflow will run
 on:
@@ -38,7 +38,21 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+
+      - name: Run a multi-line script
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+        run: npm run build
       
+
+      # Runs a single command using the runners shell
+      - name: Check npm build
+        run: ls -alrt
+
+
       # Jira Keys
       - name: Parse Jira Keys from Commit
         id: jira_keys
