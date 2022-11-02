@@ -11,8 +11,6 @@ on:
     branches: [ "dev" ]
 
 env:
-  GITHUB_RUN_ID: ${{secrets.GITHUB_RUN_ID}}
-  GITHUB_RUN_NUMBER: ${{secrets.GITHUB_RUN_NUMBER}}
   ARCHIVED_ARTIFACTS: quiz-app_build-artifacts.tar.gz
 
   # Allows you to run this workflow manually from the Actions tab
@@ -72,7 +70,7 @@ jobs:
         run: |
           aws s3 cp $ARCHIVED_ARTIFACTS \
           --region ap-northeast-2 \
-          s3://quiz-build-artifacs
+          s3://quiz-build-artifacts
 
       
       # Jira Keys
