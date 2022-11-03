@@ -38,7 +38,7 @@ jobs:
         run: ls -al build
 
       - name: "[Package] Archive artifacts"
-        run: tar cfz $ARCHIVED_ARTIFACTS build script appspec.yml
+        run: tar cfz $ARCHIVED_ARTIFACTS build deploy appspec.yml
 
       - name: "[Publish] Upload artifacts to S3 bucket"
         env:
