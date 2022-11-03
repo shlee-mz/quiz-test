@@ -10,7 +10,8 @@ env:
   ARCHIVED_ARTIFACTS: quiz-app_build-artifacts.tar.gz
 
 jobs:
-  build:
+  job1:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -49,8 +50,11 @@ jobs:
           --region ap-northeast-2 \
           s3://quiz-build-artifacts
 
-  slack_notify:
+  job2:
+    name: "Slack notification"
     needs: build
+    runs-on: ubuntu-latest
+
     steps:
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
