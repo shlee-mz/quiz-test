@@ -49,6 +49,23 @@ jobs:
           --region ap-northeast-2 \
           s3://quiz-build-artifacts
 
+  slack_notify:
+    needs: build
+    steps:
+      - name: "[Notification] Send Slack Notifications when Github Action fails"
+        if: ${{ failure() }}
+        uses: .github/actions/slack-notify
+        with:
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+      
+      - name: "[Notification] Send Slack Notifications when Github Action success"
+        if: ${{ success() }}
+        uses: .github/actions/slack-notify
+        with:
+          status: success
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+
+
       # Jira Keys
       - name: "[Notification] Parse Jira Keys from Commit"
         id: jira_keys
