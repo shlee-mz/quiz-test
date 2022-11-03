@@ -1,10 +1,6 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI-DEV
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
     branches: [ "dev" ]
   pull_request:
@@ -13,57 +9,38 @@ on:
 env:
   ARCHIVED_ARTIFACTS: quiz-app_build-artifacts.tar.gz
 
-  # Allows you to run this workflow manually from the Actions tab
-  #workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: [Preparation] Checkout Source Control
+        uses: actions/checkout@v3
+
+      - name: [Preparation] Setup node
+        uses: actions/setup-node@v3
         with:
           node-version: 14.20.1
 
+      - name: [Info] Check node version
+        run: node -v
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: [Info] Print working directory
+        run: ls -al
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
-
-      # Runs a single command using the runners shell
-      - name: PWD
-        run: pwd
-      - name: Print working directory
-        run: ls -alrt
-
-      - name: yarn install
+      - name: [Build] Install dependency packages
         run: yarn install
 
-      - name: yarn build
+      - name: [Build] Build with yarn
         run: yarn run build
 
-      - name: Print working directory
-        run: ls -alrt
-
-      - name: Print working directory #2
+      - name: [Info] Print build directory
         run: ls -al build
 
-      - name: Archive artifacts
+      - name: [Package] Archive artifacts
         run: tar cfz $ARCHIVED_ARTIFACTS build
 
-      - name: Upload artifacts to S3 bucket
+      - name: [Publish] Upload artifacts to S3 bucket
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -72,9 +49,8 @@ jobs:
           --region ap-northeast-2 \
           s3://quiz-build-artifacts
 
-      
       # Jira Keys
-      - name: Parse Jira Keys from Commit
+      - name: [Notification] Parse Jira Keys from Commit
         id: jira_keys
         if: always()
         uses: HighwayThree/jira-extract-issue-keys@master
@@ -85,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       # Jira Deployment
-      - name: Push Deployment Info to Jira
+      - name: [Notification] Push Deployment Info to Jira
         if: steps.jira_keys.outputs.jira-keys != ''
         uses: rohit-gohri/jira-ci-cd-integration@v0
         with:
@@ -96,9 +72,3 @@ jobs:
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
           client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
           
-      - name: Confirm Jira Build Output
-        if: success()
-        run: |
-          echo ${{ steps.jira_keys.outputs.jira-keys }}
-          echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
-
