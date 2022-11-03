@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "[Preparation] Checkout Source Control"
+      - name: "Checkout Source Control"
         uses: actions/checkout@v3
 
-      - name: "[Preparation] Setup node"
+      - name: "Setup node"
         uses: actions/setup-node@v3
         with:
           node-version: 14.20.1
