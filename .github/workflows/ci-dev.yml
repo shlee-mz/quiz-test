@@ -50,6 +50,7 @@ jobs:
           --region ${{ secrets.AWS_REGION }} \
           s3://quiz-build-artifacts
 
+
   slack-notify:
     if: ${{ always() }}
     needs: build
@@ -78,8 +79,32 @@ jobs:
           status: success
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
 
+
+  deploy:
+    name: "Deploy"
+
+    needs: Slack-notify
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1
+      - name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: "[Deploy] Deploy using AWS CodeDeploy"
+        run: aws deploy create-deployment 
+          --application-name quiz-app 
+          --deployment-group-name quiz-dev-deploy-group-test 
+          --deployment-config-name CodeDeployDefault.OneAtATime 
+          --s3-location bucket=quiz-build-artifacts,bundleType=tgz,key=$ARCHIVED_ARTIFACTS
+
+
   jira-notify:
-    needs: slack-notify
+    needs: deploy
     name: "Jira-notify"
 
     runs-on: ubuntu-latest
@@ -110,27 +135,3 @@ jobs:
           jira_instance: shlee-mz
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
           client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
-          
-
-  deploy:
-    name: "Deploy"
-
-    needs: jira-notify
-    runs-on: ubuntu-latest
-
-    steps:
-      # Step 1
-      - name: "[INFO] Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: "[Deploy] Deploy using AWS CodeDeploy"
-        run: aws deploy create-deployment 
-          --application-name quiz-app 
-          --deployment-group-name quiz-dev-deploy-group-test 
-          --deployment-config-name CodeDeployDefault.OneAtATime 
-          --s3-location bucket=quiz-build-artifacts,bundleType=tgz,key=$ARCHIVED_ARTIFACTS
-
