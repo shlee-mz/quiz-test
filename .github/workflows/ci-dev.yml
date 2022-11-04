@@ -52,8 +52,8 @@ jobs:
 
   notify:
     needs: build
-     name: "Notification"
-     steps:
+    name: "Notification"
+    steps:
 
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
