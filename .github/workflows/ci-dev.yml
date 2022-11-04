@@ -12,8 +12,8 @@ env:
 jobs:
   build:
     name: "Build & Package"
-    runs-on: ubuntu-latest
 
+    runs-on: ubuntu-latest
     steps:
       - name: "Checkout Source Control"
         uses: actions/checkout@v3
@@ -81,13 +81,11 @@ jobs:
 
 
   deploy:
+    needs: Slack-notify
     name: "Deploy"
 
-    needs: Slack-notify
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1
       - name: "Configure AWS credentials"
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -111,7 +109,6 @@ jobs:
     steps:
       - name: "Checkout Source Control"
         uses: actions/checkout@v3
-
 
       # Jira Keys
       - name: "[Notification] Parse Jira Keys from Commit"
