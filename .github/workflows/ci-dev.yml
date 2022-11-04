@@ -59,6 +59,11 @@ jobs:
       - name: "Checkout Source Control"
         uses: actions/checkout@v3
 
+      - name: "[Info] Print working directory"
+        run: |
+          ls -al
+          find .github
+
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
         uses: ./.github/actions/slack-notify
