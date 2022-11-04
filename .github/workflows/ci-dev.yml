@@ -113,7 +113,7 @@ jobs:
           
 
   deploy:
-    name: "Deployy"
+    name: "Deploy"
 
     needs: jira-notify
     runs-on: ubuntu-latest
@@ -132,5 +132,5 @@ jobs:
           --application-name quiz-app 
           --deployment-group-name quiz-dev-deploy-group-test 
           --deployment-config-name CodeDeployDefault.OneAtATime 
-          --s3-location bucket=quiz-build-artifacts,bundleType=tar.gz,key=$ARCHIVED_ARTIFACTS
+          --s3-location bucket=quiz-build-artifacts,bundleType=tgz,key=$ARCHIVED_ARTIFACTS
 
