@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    name: "Build, Package, and Upload to S3"
+    name: "Build & Package"
     runs-on: ubuntu-latest
 
     steps:
