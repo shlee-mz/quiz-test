@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    name: "Build and Package"
+    name: "Build, Package, and Upload to S3"
     runs-on: ubuntu-latest
 
     steps:
@@ -52,10 +52,10 @@ jobs:
 
   notify:
     needs: build
-    runs-on: ubuntu-latest
+#    runs-on: ubuntu-latest
     steps:
-      - name: "Checkout Source Control"
-        uses: actions/checkout@v3
+#      - name: "Checkout Source Control"
+#        uses: actions/checkout@v3
 
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
