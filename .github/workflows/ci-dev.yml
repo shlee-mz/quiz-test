@@ -53,10 +53,7 @@ jobs:
   notify:
     needs: build
      name: "Notification"
-#    runs-on: ubuntu-latest
-    steps:
-#      - name: "Checkout Source Control"
-#        uses: actions/checkout@v3
+     steps:
 
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
