@@ -53,8 +53,9 @@ jobs:
   notify:
     needs: build
     name: "Notification"
+    runs-on: ubuntu-latest
     steps:
-
+      - name: "Checkout Source Control"
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
         uses: ./.github/actions/slack-notify
