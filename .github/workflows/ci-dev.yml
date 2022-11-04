@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    name: Build
+    name: "Build and Package"
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +50,10 @@ jobs:
           --region ap-northeast-2 \
           s3://quiz-build-artifacts
 
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
         uses: ./.github/actions/slack-notify
