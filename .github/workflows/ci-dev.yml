@@ -80,7 +80,7 @@ jobs:
 
   jira-notify:
     needs: slack-notify
-    name: "jira-notify"
+    name: "Jira-notify"
 
     runs-on: ubuntu-latest
     steps:
@@ -113,14 +113,14 @@ jobs:
           
 
   deploy:
-    name: "Deploy using CodeDeploy"
+    name: "Deployy"
 
     needs: jira-notify
     runs-on: ubuntu-latest
 
     steps:
       # Step 1
-      - name: Configure AWS credentials
+      - name: [INFO] Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -128,9 +128,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: "[Deploy] Deploy using AWS CodeDeploy"
-        run: aws deploy create-deployment \
-          --application-name quiz-app \
-          --deployment-group-name quiz-dev-deploy-group-test \
-          --deployment-config-name CodeDeployDefault.OneAtATime \
+        run: aws deploy create-deployment 
+          --application-name quiz-app 
+          --deployment-group-name quiz-dev-deploy-group-test 
+          --deployment-config-name CodeDeployDefault.OneAtATime 
           --s3-location bucket=quiz-build-artifacts,bundleType=tar.gz,key=$ARCHIVED_ARTIFACTS
 
