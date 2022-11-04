@@ -41,18 +41,19 @@ jobs:
       - name: "[Package] Archive artifacts"
         run: tar cfz $ARCHIVED_ARTIFACTS build deploy appspec.yml
 
-      - name: "[Publish] Upload artifacts to S3 bucket"
+      - name: "[S3 Upload] Upload artifacts to S3 bucket"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws s3 cp $ARCHIVED_ARTIFACTS \
-          --region ap-northeast-2 \
+          --region ${{ secrets.AWS_REGION }} \
           s3://quiz-build-artifacts
 
-  notify:
+  slack-notify:
+    if: ${{ always() }}
     needs: build
-    name: "Notification"
+    name: "Slack-notify"
 
     runs-on: ubuntu-latest
     steps:
@@ -70,12 +71,21 @@ jobs:
         with:
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
       
-      - name: "[Notification] Send Slack Notifications when Github Action success"
+      - name: "[Notification] Send Slack Notifications when Github Action successfully"
         if: ${{ success() }}
         uses: ./.github/actions/slack-notify
         with:
           status: success
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
+
+  jira-notify:
+    needs: slack-notify
+    name: "jira-notify"
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Source Control"
+        uses: actions/checkout@v3
 
 
       # Jira Keys
@@ -101,3 +111,26 @@ jobs:
           client_id: ${{ secrets.JIRA_CLIENT_ID }}
           client_secret: ${{ secrets.JIRA_CLIENT_SECRET }}
           
+
+  deploy:
+    name: "Deploy using CodeDeploy"
+
+    needs: jira-notify
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: "[Deploy] Deploy using AWS CodeDeploy"
+        run: aws deploy create-deployment \
+          --application-name quiz-app \
+          --deployment-group-name quiz-dev-deploy-group-test \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
+          --s3-location bucket=quiz-build-artifacts,bundleType=tar.gz,key=$ARCHIVED_ARTIFACTS
+
