@@ -56,6 +56,8 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: "Checkout Source Control"
+        uses: actions/checkout@v3
 
       - name: "[Notification] Send Slack Notifications when Github Action fails"
         if: ${{ failure() }}
