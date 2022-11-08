@@ -59,11 +59,6 @@ jobs:
         run: |
           echo ${{ job.status }}
           echo "jobstatus=${{ job.status }}" >> $GITHUB_OUTPUT
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 60819293c97b9c82398425ac82e212cc97c50eec
   slack-notify:
     if: ${{ always() }}
     needs: build
@@ -78,10 +73,6 @@ jobs:
         run: |
           ls -al
           find .github
-<<<<<<< HEAD
-=======
-
->>>>>>> 60819293c97b9c82398425ac82e212cc97c50eec
       - name: "[Notification] Send Slack Notifications when Previous job failed"
         if: ${{ needs.build.outputs.jobstatus != 'success' }}
         uses: ./.github/actions/slack-notify
