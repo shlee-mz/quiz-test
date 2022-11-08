@@ -76,13 +76,13 @@ jobs:
           ls -al
           find .github
 
-      - name: "[Notification] Send Slack Notifications when Github Action fails"
+      - name: "[Notification] Send Slack Notifications when Previous job failed"
         if: ${{ needs.build.outputs.jobstatus != 'success' }}
         uses: ./.github/actions/slack-notify
         with:
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
       
-      - name: "[Notification] Send Slack Notifications when Github Action successfully"
+      - name: "[Notification] Send Slack Notifications when Previous job succeed"
         if: ${{ needs.build.outputs.jobstatus == 'success' }}
         uses: ./.github/actions/slack-notify
         with:
