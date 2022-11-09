@@ -107,6 +107,7 @@ function App() {
         dispatch({type: RESET_QUIZ});
     };
 
+    // eslint-disable-next-line
     const next = () => {
         const answer = {questionId: question.id, answer: currentAnswer};
 
@@ -151,7 +152,13 @@ function App() {
                     <Question />
                     {renderError()}
                     <Answers />
+
+		    {/* Original code:
                     <button className="btn btn-primary" onClick={next}>
+		    */}
+
+		    {/* Test code: */}
+                    <button className="btn btn-primary" onClick={() => { alert('>>>>> 버그 발생 <<<<<'); }}>
                         Confirm and Continue
                     </button>
                 </div>
