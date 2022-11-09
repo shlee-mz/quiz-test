@@ -1,10 +1,9 @@
 name: CI-PROD
 
 on:
-#  push:
-#    branches: [ "prod" ]
   pull_request:
     branches: [ "prod" ]
+    types: [ "closed" ]
 
 env:
   ARCHIVED_ARTIFACTS: quiz-app_prod-build-artifacts.tar.gz
